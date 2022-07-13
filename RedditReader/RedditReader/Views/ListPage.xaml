@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:RedditReader.ViewModels;assembly=RedditReader"
+             xmlns:iOsSpecific="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             x:Class="RedditReader.Views.ListPage"
+             x:DataType="viewModels:ListViewModel"
+             iOsSpecific:Page.UseSafeArea="true"
+             Title="Cats">
+    <CollectionView ItemsSource="{Binding Items}"
+                    SelectionMode="Single"
+                    SelectionChangedCommand="{Binding ViewCommand}"
+                    SelectedItem="{Binding SelectedItem}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="viewModels:ItemViewModel">
+                <Grid RowDefinitions="1,60,1"
+                      ColumnDefinitions="60,*">
+
+                    <!--Top divider-->
+                    <BoxView Color="LightGray"
+                             Grid.Row="0"
+                             Grid.ColumnSpan="2" />
+
+                    <!--Thumbnail-->
+                    <Image Source="{Binding Thumbnail}"
+                           Grid.Row="1"
+                           Grid.Column="0"
+                           Aspect="AspectFill"
+                           x:Name="Image"
+                           Margin="3" />
+
+                    <!--Title-->
+                    <Label Text="{Binding Title}"
+                           Grid.Row="1"
+                           Grid.Column="1"
+                           Margin="6,0"
+                           VerticalTextAlignment="Center">
+
+                        <!--Data trigger causes Title Label to take up both columns if there is no thumbnail-->
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Thumbnail}"
+                                         Value="self">
+                                <!--"self" means it is a self-post. Relying on this is a leaky abstraction. TODO: Improve.-->
+
+                                <Setter Property="Grid.ColumnSpan" Value="2" />
+                                <Setter Property="Grid.Column" Value="0" />
+                            </DataTrigger>
+                        </Label.Triggers>
+
+                    </Label>
+
+                    <!--Bottom divider-->
+                    <BoxView Color="LightGray"
+                             Grid.Row="2"
+                             Grid.ColumnSpan="2" />
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>
